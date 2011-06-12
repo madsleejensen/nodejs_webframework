@@ -1,0 +1,18 @@
+var controllerCreator = require("contentcube/controller");
+
+module.exports = function(request, response) {
+	var instance = controllerCreator(request, response);
+	
+	instance.errorAction = function(error) {
+		
+		response.statusCode = error.code || 501;
+		
+		var viewData = {
+			error: error
+		};
+		
+		instance.renderView('error.ejs', viewData, this);
+	};
+	
+	return instance;
+}
