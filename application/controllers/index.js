@@ -1,8 +1,8 @@
 var controllerCreator = require("contentcube/controller");
 
-module.exports = function indexControllerCreator(request, response) {
+module.exports = function(application, request, response) {
 	
-	var instance = controllerCreator(request, response);
+	var instance = controllerCreator(application, request, response);
 	
 	// enten skal "this" være callback eller også skal conventionen  med callback altid er sidste parameter ændres
 	// eller også skal callback sættes som en property på controller instance.

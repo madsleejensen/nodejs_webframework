@@ -1,7 +1,7 @@
 var controllerCreator = require("contentcube/controller");
 
-module.exports = function(request, response) {
-	var instance = controllerCreator(request, response);
+module.exports = function(application, request, response) {
+	var instance = controllerCreator(application, request, response);
 	
 	instance.errorAction = function(error) {
 		
