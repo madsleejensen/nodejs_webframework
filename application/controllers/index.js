@@ -20,11 +20,14 @@ module.exports = function(application, request, response) {
 		instance.renderView('index.ejs', null, this);
 	};
 	
-	instance.trickErrorAction = function() {
-		var error = new Error("test");
-		error.contentcube = true;
-
-		callback(error);		
+	instance.helloAction = function() {
+		response.write("index -> helloAction()");
+		this();
+	};
+	
+	instance.regexAction = function(number) {
+		response.write("index -> regex : " + number);
+		this();
 	};
 	
 	return instance;

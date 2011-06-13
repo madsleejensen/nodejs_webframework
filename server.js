@@ -6,7 +6,6 @@ var requestDecorator = require("contentcube/request");
 var responseDecorator = require("contentcube/response");
 
 var application = (function() {
-	
 	var mConfig;
 	var mRouter;
 	var mDispatcher;
