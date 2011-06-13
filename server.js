@@ -56,14 +56,8 @@ var application = (function() {
 	function onHttpRequestReceived(request, response) {
 		request = requestDecorator.decorate(request);
 		response = responseDecorator.decorate(response);
-
-		var buffer = "";
-		request.setEncoding('UTF8');
-
-		request.on("data", function(chunk) {
-			buffer += chunk;
-		});
-
+		
+		// wait for request to be received so all data is avaible for request handling.
 		request.on("end", function() {	
 			Step(
 				function route() {
