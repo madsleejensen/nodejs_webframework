@@ -1,4 +1,5 @@
 var queryString = require("querystring");
+var Step = require("step");
 var controllerCreator = require("contentcube/controller");
 
 module.exports = function(application, request, response) {
@@ -47,6 +48,24 @@ module.exports = function(application, request, response) {
 		};
 		
 		instance.renderViewWithLayout('example/dump', viewData, this);
+	};
+	
+	instance.twitterReadingAction = function() {
+		var callback = this;
+		var twitterModel = require("./../models/twitter.js");
+		
+		Step(
+			function getData() {
+				twitterModel.findLatest(this);
+			},
+			function render(error, data) {
+				if (error) {
+					return callback(error);
+				}
+				
+				instance.renderViewWithLayout('example/dump', {dump: data}, callback);
+			}
+		);
 	};
 	
 	instance.postDispatch = function() {
