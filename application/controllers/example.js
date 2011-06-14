@@ -11,7 +11,7 @@ module.exports = function(application, request, response) {
 		this(); // this is always the callback, remember to call it.
 	};
 	
-	// url: 127.0.0.1:8123/example/withLayout
+	// url: 127.0.0.1:8123/example/withLayout or 127.0.0.1:8123/example/with-layout
 	instance.withLayoutAction = function() {
 		var viewData = {
 			title: 'Hello world',
@@ -21,7 +21,7 @@ module.exports = function(application, request, response) {
 		instance.renderViewWithLayout('example/hello', viewData, /* callback */ this);
 	};
 	
-	// url: 127.0.0.1:8123/example/triggerAnError
+	// url: 127.0.0.1:8123/example/triggerAnError or 127.0.0.1:8123/example/trigger-an-error
 	instance.triggerAnErrorAction = function() {
 		var error = new Error("Example of a triggered error");
 			error.family = "contentcube";
@@ -40,7 +40,7 @@ module.exports = function(application, request, response) {
 		instance.renderViewWithLayout('example/counter', {count: counter}, this);
 	};
 	
-	// url: 127.0.0.1:8123/example/readGetVariables
+	// url: 127.0.0.1:8123/example/readGetVariabless or 127.0.0.1:8123/example/read-get-variables
 	instance.readGetVariablesAction = function() {
 		var viewData = {
 			dump: queryString.stringify(request.get())
