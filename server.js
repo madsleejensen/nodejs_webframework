@@ -72,6 +72,10 @@ var application = (function() {
 						console.log("error: " + error.message);
 						response.write(error.message);
 					}
+					response.setHeader('Set-Cookie', ['hokus=Line; expires=Tue, 14 Jun 2011 11:04:54 GMT', 'name=asdasds; expires=Tue, 14 Jun 2011 11:04:54 GMT']);
+					response.setCookie("hello", "mads", 60);
+					response.setCookie("name", "Line", 12);
+					response.setCookie("age", 12, 12);
 					
 					response.end();
 				}
