@@ -1,3 +1,4 @@
+var queryString = require("querystring");
 var controllerCreator = require("contentcube/controller");
 
 module.exports = function(application, request, response) {
@@ -37,6 +38,15 @@ module.exports = function(application, request, response) {
 			
 		response.setCookie("times_visited", counter, lifetimeInSeconds);
 		instance.renderViewWithLayout('example/counter', {count: counter}, this);
+	};
+	
+	// url: 127.0.0.1:8123/example/readGetVariables
+	instance.readGetVariablesAction = function() {
+		var viewData = {
+			dump: queryString.stringify(request.get())
+		};
+		
+		instance.renderViewWithLayout('example/dump', viewData, this);
 	};
 	
 	instance.postDispatch = function() {
