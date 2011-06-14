@@ -19,5 +19,5 @@ exports.routing = {
 };
 
 exports.layout = {
-	defaultLayout: 'layout/default.ejs'
+	defaultLayout: 'layouts/default.ejs'
 };

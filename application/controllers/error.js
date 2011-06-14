@@ -4,14 +4,12 @@ module.exports = function(application, request, response) {
 	var instance = controllerCreator(application, request, response);
 	
 	instance.errorAction = function(error) {
-		
 		response.statusCode = error.code || 501;
-		
 		var viewData = {
 			error: error
 		};
 		
-		instance.renderView('error.ejs', viewData, this);
+		instance.renderViewWithLayout('error.ejs', viewData, this);
 	};
 	
 	return instance;
