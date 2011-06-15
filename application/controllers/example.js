@@ -19,7 +19,7 @@ module.exports = function(application, request, response) {
 			description: 'This is an example. You IP address is : ' + request.client('remote-address', 'N/A')
 		};
 		
-		instance.renderViewWithLayout('example/hello', viewData, /* callback */ this);
+		instance.renderViewWithLayout('pages/example/hello', viewData, /* callback */ this);
 	};
 	
 	// url: 127.0.0.1:8123/example/triggerAnError or 127.0.0.1:8123/example/trigger-an-error
@@ -47,7 +47,7 @@ module.exports = function(application, request, response) {
 			dump: queryString.stringify(request.get())
 		};
 		
-		instance.renderViewWithLayout('example/dump', viewData, this);
+		instance.renderViewWithLayout('pages/example/dump', viewData, this);
 	};
 	
 	instance.twitterReadingAction = function() {
@@ -63,7 +63,7 @@ module.exports = function(application, request, response) {
 					return callback(error);
 				}
 				
-				instance.renderViewWithLayout('example/dump', {dump: data}, callback);
+				instance.renderViewWithLayout('pages/example/dump', {dump: data}, callback);
 			}
 		);
 	};
