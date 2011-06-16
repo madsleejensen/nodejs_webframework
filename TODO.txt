@@ -1,0 +1,28 @@
+use view helpers.
+placeholders
+
+layoutHelper.addJavascript('mads/js.js');
+layoutHelper.addStylesheet('mads/css.css');
+
+// placeholder er bare et map hvis leve tid er nøjagtig en request.
+placeholder.get('javascripts');
+placeholder.set('testing', 'mads');
+
+// istedet for at gemme så meget state i request, måske burde der under hver request oprettes et request-session object.
+
+
+// async?
+view.render('partial.ejs', 'mads');
+
+
+placeholder('layout').get('javascript')
+
+
+session = {
+	request: request,
+	response: response,
+	data: {
+		helpers: {},
+		
+	}
+}

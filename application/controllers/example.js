@@ -68,6 +68,14 @@ module.exports = function(application, request, response) {
 		);
 	};
 	
+	instance.viewHelperAction = function() {
+		
+		instance.broker.layout.addScript("test");
+		instance.broker.placeholder('testing').set("title", "hello world");
+		instance.renderViewWithLayout("pages/example/helpers", {}, this);
+	
+	};
+	
 	instance.postDispatch = function() {
 		// called after any action is executed on the controller.
 		this();
