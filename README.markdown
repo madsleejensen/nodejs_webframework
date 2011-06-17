@@ -25,8 +25,32 @@ Controllers are stored in 'application/controllers/' they should always inherit 
 	
 ##### Controller - Hooks
 
-preDispatch()
-postDispatch()
+You can hook in a be notified before and after a call to a action in a controller is being made. Just define the methods in your controller
+	
+	instance.preDispatch = function() {
+		this(); // remember to execute the callback.
+	};
+	instance.postDispatch = function() {
+		this(); // callback
+	};
 
-	
-	
+## Helpers
+
+A set of helpers is provided to both your controllers and the views you render.
+
+### Placeholder 
+
+A placeholder is simply a data container which lifetime is excatly one request. This allows components to maintain state while remaning decoupled form each other.
+
+	for example: 
+		View "A": <% _helper.placeholder('my-data').set('title', 'Hello world') %>
+		View "B": <%- _helper.placeholder('my-data').get('title') %> // returns "Hello world"
+		
+### View render
+
+Enables views to render partial views (innerviews).
+
+	_helpers.renderView('partials/list_item_user.ejs', {name: 'Mads'});
+
+This will render the view and return the output. Notice this is a blocking call.
+
