@@ -11,6 +11,18 @@ If other isnt specified the framework will follow a standard convention for rout
 	
 If you want more control over your url mapping into controller / action names, the configuration file allows you to do so. See 'application/config/production.js' for an example.
 
+### Cookies
+
+Cookies can be accessed thru the `request` object
+	request.cookie('cookie_name', 'n/a'); // returns the value of cookie_name if present, else returns the value of the second parameter.
+	request.cookie(); // returns a name-value map of all cookies.
+
+To set a cookie use the `response` object
+	response.setCookie('cookie_name', 'value', /* lifetime */ 60, /* domain */ null, /* path */ null);
+
+And to remove an existing cookie use
+	response.removeCookie('cookie_name', 'domain', 'path');
+
 ### Controllers
 
 Controllers are stored in 'application/controllers/' they should always inherit from the 'system/contentncube/controller.js'. The naming convention is that controller filenames should always be lowercase. 
@@ -56,4 +68,23 @@ Enables views to render partial views (innerviews).
 	<%- _helpers.renderView('partials/list_item_user.ejs', {name: 'Mads'}) %>
 
 This will render the view and return the output. Notice this is a blocking call.
+
+### Layout
+
+Simply a wrapper around a placeholder, that allows you to dynamicly build up a list of CSS / Javascript files to be added in the template <head></head>.
+	<% _helpers.layout.setTitle('Hello world') %>
+	<% _helpers.layout.addScript('/javascript/file.js') %>
+	<% _helpers.layout.addStyle('/css/style.css') %>
+
+And in your template dump the includes
+
+	<html>
+		<head>
+			<title><%- _helpers.layout.getTitle() %></title>
+			<%- _helpers.layout.getScripts() %> 
+			<%- _helpers.layout.getStyles() %>
+		</head>
+	</html>
+
+
 
