@@ -52,7 +52,7 @@ module.exports = function(application, request, response) {
 	
 	instance.twitterReadingAction = function() {
 		var callback = this;
-		var twitterModel = require("./../models/twitter.js");
+		var twitterModel = require("./../models/twitter");
 		
 		Step(
 			function getData() {
@@ -69,11 +69,31 @@ module.exports = function(application, request, response) {
 	};
 	
 	instance.viewHelperAction = function() {
-		
 		instance.broker.layout.addScript("test");
 		instance.broker.placeholder('testing').set("title", "hello world");
 		instance.renderViewWithLayout("pages/example/helpers", {}, this);
+	};
 	
+	instance.guestbookAction = function() {
+		var callback = this;
+		var guestbookModel = require("./../models/guestbook");
+		
+		if (request.method == "POST") {
+			guestbookModel.createNew(request.post());
+		}
+		
+		Step(
+			function getComments() {
+				guestbookModel.findAll(this);
+			},
+			function renderView(error, comments) {
+				var viewData = {
+					comments: comments
+				};
+				
+				instance.renderViewWithLayout("pages/example/guestbook", viewData, callback);
+			}
+		);
 	};
 	
 	instance.postDispatch = function() {

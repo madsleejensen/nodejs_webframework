@@ -6,12 +6,14 @@ var createRouter = require("contentcube/router");
 var createDispatcher = require("contentcube/dispatcher");
 var requestDecorator = require("contentcube/request");
 var responseDecorator = require("contentcube/response");
+var mongolian = require("mongolian");
 
 var application = (function() {
 	var mConfig;
 	var mRouter;
 	var mDispatcher;
 	var mServer;
+	var mDatabase;
 	var instance = {};
 	
 	Step(
@@ -24,6 +26,7 @@ var application = (function() {
 		},
 		function startServer(error) {
 			mServer.listen(8123);
+			global.application = instance;
 		}
 	);
 	
@@ -53,6 +56,17 @@ var application = (function() {
 		}
 		
 		return pointer;
+	};
+	
+	instance.getDatabase = function() {
+		if (!mDatabase) {
+			var connection = instance.getConfig('mongodb.host') + ':' + instance.getConfig('mongodb.port');
+			var databaseServer = new mongolian(connection);
+			
+			mDatabase = databaseServer.db(instance.getConfig('mongodb.database'));
+		}
+		
+		return mDatabase;
 	};
 	
 	function onHttpRequestReceived(request, response) {

@@ -36,9 +36,9 @@ Controllers are stored in 'application/controllers/' they should always inherit 
 		action: 'showAction'
 		parameters: showAction(12345);
 		
-	Actions are always suffixed with 'Action'
+Actions are always suffixed with 'Action'
 	
-##### Controller - Hooks
+#### Controller - Hooks
 
 You can hook in a be notified before and after a call to a action in a controller is being made. Just define the methods in your controller
 	
