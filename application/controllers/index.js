@@ -13,11 +13,11 @@ module.exports = function(application, request, response) {
 			name: "Mads Lee Jensen"
 		};
 		
-		instance.renderViewWithLayout('about.ejs', viewData, this);
+		instance.renderViewWithLayout('pages/about.ejs', viewData, this);
 	}
 	
 	instance.indexAction = function() {
-		instance.renderView('index.ejs', null, this);
+		instance.renderView('pages/index.ejs', null, this);
 	};
 	
 	instance.helloAction = function() {

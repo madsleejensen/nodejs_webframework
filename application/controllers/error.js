@@ -9,7 +9,7 @@ module.exports = function(application, request, response) {
 			error: error
 		};
 		
-		instance.renderViewWithLayout('error.ejs', viewData, this);
+		instance.renderViewWithLayout('pages/error.ejs', viewData, this);
 	};
 	
 	return instance;
