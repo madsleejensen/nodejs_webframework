@@ -3,3 +3,5 @@
 *.tmproj
 .dropbox
 application/logs/*
+TODO.txt
+/TODO.txt
