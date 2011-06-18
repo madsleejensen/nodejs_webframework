@@ -27,9 +27,12 @@ Controllers are stored in 'application/controllers/' they should always inherit 
 
 You can hook in a be notified before and after a call to a action in a controller is being made. Just define the methods in your controller
 	
+	// called before any action is executed.
 	instance.preDispatch = function() {
 		this(); // remember to execute the callback.
 	};
+	
+	// called after an action is executed (not if an error occured while executing the action).
 	instance.postDispatch = function() {
 		this(); // callback
 	};
@@ -50,7 +53,7 @@ A placeholder is simply a data container which lifetime is excatly one request. 
 
 Enables views to render partial views (innerviews).
 
-	_helpers.renderView('partials/list_item_user.ejs', {name: 'Mads'});
+	<%- _helpers.renderView('partials/list_item_user.ejs', {name: 'Mads'}) %>
 
 This will render the view and return the output. Notice this is a blocking call.
 

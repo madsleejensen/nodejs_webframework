@@ -1,2 +1,5 @@
-<%= _helpers.placeholder('testing').get('title') %>
 <% _helpers.layout.addScript("http://www.javascript.com") %>
+
+<h1><%= _helpers.placeholder('testing').get('title') %></h1>
+<%- _helpers.renderView('partial/person.ejs', {name: 'Mads Jensen', description: 'Testing render view helper'}) %>
+<p>footer</p>
