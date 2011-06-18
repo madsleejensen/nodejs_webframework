@@ -71,7 +71,8 @@ This will render the view and return the output. Notice this is a blocking call.
 
 ### Layout
 
-Simply a wrapper around a placeholder, that allows you to dynamicly build up a list of CSS / Javascript files to be added in the template <head></head>.
+Simply a wrapper around a placeholder, that allows you to dynamicly build up a list of CSS / Javascript files to be added in the template.
+
 	<% _helpers.layout.setTitle('Hello world') %>
 	<% _helpers.layout.addScript('/javascript/file.js') %>
 	<% _helpers.layout.addStyle('/css/style.css') %>
