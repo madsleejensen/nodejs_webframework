@@ -1,5 +1,6 @@
 var http = require("http");
 var Step = require("step");
+var util = require("util");
 var utils = require("contentcube/utils");
 var createRouter = require("contentcube/router");
 var createDispatcher = require("contentcube/dispatcher");
@@ -58,6 +59,10 @@ var application = (function() {
 		request = requestDecorator.decorate(request);
 		response = responseDecorator.decorate(response);
 		
+		var message = request.method + ": " + request.url;
+		var logger = request.getLogger();
+		logger.log(message);
+		
 		// wait for request to be received so all data is avaible for request handling.
 		request.on("end", function() {	
 			Step(
@@ -70,7 +75,7 @@ var application = (function() {
 				},
 				function sendResponse(error) {
 					if (error) {
-						console.log("error: " + error.message);
+						logger.error(error);
 						response.write(error.message);
 					}
 					

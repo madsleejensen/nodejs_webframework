@@ -2,3 +2,4 @@
 /Icon
 *.tmproj
 .dropbox
+application/logs/*
