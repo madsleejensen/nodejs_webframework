@@ -14,13 +14,16 @@ If you want more control over your url mapping into controller / action names, t
 ### Cookies
 
 Cookies can be accessed thru the `request` object
+
 	request.cookie('cookie_name', 'n/a'); // returns the value of cookie_name if present, else returns the value of the second parameter.
 	request.cookie(); // returns a name-value map of all cookies.
 
 To set a cookie use the `response` object
+
 	response.setCookie('cookie_name', 'value', /* lifetime */ 60, /* domain */ null, /* path */ null);
 
 And to remove an existing cookie use
+
 	response.removeCookie('cookie_name', 'domain', 'path');
 
 ### Controllers
