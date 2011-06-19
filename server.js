@@ -8,7 +8,7 @@ var requestDecorator = require("contentcube/request");
 var responseDecorator = require("contentcube/response");
 var mongolian = require("mongolian");
 
-var application = (function() {
+global.application = (function() {
 	var mConfig;
 	var mRouter;
 	var mDispatcher;
@@ -26,7 +26,6 @@ var application = (function() {
 		},
 		function startServer(error) {
 			mServer.listen(8123);
-			global.application = instance;
 		}
 	);
 	
@@ -98,5 +97,7 @@ var application = (function() {
 			);
 		});
 	}
+	
+	return instance;
 	
 }());
