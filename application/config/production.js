@@ -8,6 +8,7 @@ exports.system = {
 exports.routing = {
 	defaultControllerName: 'index',
 	defaultActionName: 'index',
+	defaultModuleName: 'default',
 	
 	/**
 	 * Define routes that does not follow the standard `:controller/:action` convention here.
@@ -21,6 +22,11 @@ exports.routing = {
 		'/reg/exp/([0-9]+)': {
 			controllerName: 'index',
 			actionName: 'regex'
+		},
+		'/say-hello': {
+			controllerName: 'index',
+			actionName: 'test',
+			moduleName: 'examples'
 		}
 	}
 };
