@@ -2,14 +2,97 @@
 
 A simple framework for building web applications in nodejs, it follows a mvc approach an is using familiar conventions you see in many PHP frameworks. The structure of this project is inspired by the two PHP frameworks Zend and Kohana.
 
+### File structure
+
+The basic file structure:
+
+	|-- application/
+	|   |-- config/
+	|   |   |-- production.js
+	|	|-- logs/
+	|	|-- controllers/
+	|   |   |-- index.js
+	|   |-- models/
+	|   |-- views/
+	|   |   |-- layouts/
+	|   |   |   |-- template.ejs
+	|   |   |-- pages/
+	|   |   |   |-- view.ejs
+	|   |   |-- partials/
+	|-- node_modules/
+	|	|-- contentcube/
+	|	|-- (node packages)
+	|-- public
+	|   |-- javascript/
+	|   |-- css/
+
+#### Modular structure
+
+Using the modular structure your application have a way to structure `sub-applications`, this is useful for example having a web page module, and a administrator module, this keeps a nice separation between the two different responsibilities they serve.
+
+	|-- application/
+	|   |-- config/
+	|   |   |-- production.js
+	|	|-- logs/
+	|   |-- **modules/**
+	|   |   |-- **default/**
+	|	|   |   |-- controllers/
+	|   |   |   |   |-- index.js
+	|   |   |   |-- models/
+	|   |   |   |-- views/
+	|   |   |   |   |-- layouts/
+	|   |   |   |   |   |-- template.ejs
+	|   |   |   |   |-- pages/
+	|   |   |   |   |   |-- view.ejs
+	|   |   |-- **admin/**
+	|	|   |   |-- controllers/
+	|   |   |   |-- models/
+	|   |   |   |-- views/
+	|   |   |   |   |-- layouts/
+	|   |   |   |   |-- pages/
+	|-- node_modules/
+	|	|-- contentcube/
+	|	|-- (node packages)
+	|-- public
+	|   |-- javascript/
+	|   |-- css/
+
 ### Routing
 
-If other isnt specified the framework will follow a standard convention for routing urls
+There are three ways a request can be routed.
 
-	http://localhost/[controller-name]/[action-name]
-	if no controller-name or action-name is specified a default controller / action will be used which is "index/index"
+1. By configuration.
+2. By convention without modules.
+3. By convention with modules.
+
+#### By configuration.
+
+The configuration file allows you to specify a exact map between a URL and a module / controller / action. See the configuration file for examples.
+
+#### By convention without modules.
+
+The standard convention is to split the url request up into these parts.
+
+	http://localhost/[:controller-name]/[:action-name]/[:params...]
 	
-If you want more control over your url mapping into controller / action names, the configuration file allows you to do so. See 'application/config/production.js' for an example.
+if either the action-name or controller-name is not specified the router will use default values found in the configuration `routing.defaultControllerName` and `routing.defaultActionName`
+
+#### By convention *with* modules.
+
+If the configuration `system.modulesEnabled` is `true` then it attempts to use the first part of the url as module name.
+
+	http://localhost/[:module-name]/[:controller-name]/[:action-name]/[:params...]
+	
+If the `:module-name` doesnt match a folder in `/application/modules/` then it will route using the "By convention without modules" ruleset.
+
+The *default* module does not need to specify its modulename in the url, meaning 
+	
+	http://localhost/default/index/index 
+
+is the same as
+	
+	http://localhost/index/index
+
 
 ### Cookies
 
