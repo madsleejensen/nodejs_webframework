@@ -1,0 +1,18 @@
+<form action="<%- _helpers.url.current() %>" method="post">
+	<label for="name">Name:</label>
+	<input type="text" name="name" />
+	
+	<label for="comment">Comment:</label>
+	<textarea name="comment" rows="15" cols="60"></textarea>
+	
+	<input type="submit" value="Send" />
+</form>
+
+<ul>
+<% for (var i = 0; i < comments.length; i++) { %>
+	<li>
+		<h4><%= comments[i].name %></h4>
+		<p><%= comments[i].comment %></p>
+	</li>
+<% } %>
+</ul>
