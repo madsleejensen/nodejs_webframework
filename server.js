@@ -14,6 +14,7 @@ global.application = (function() {
 	var mDispatcher;
 	var mServer;
 	var mDatabase;
+	var mStaticContentProvider;
 	var instance = {};
 	
 	/**
@@ -61,7 +62,10 @@ global.application = (function() {
 		return pointer;
 	};
 	
-	
+	/**
+	 * Lazy loader for a mongolian singleton instance.
+	 * @return {mongolian}
+	 */
 	instance.getDatabase = function() {
 		if (!mDatabase) {
 			var connection = instance.getConfig('mongodb.host') + ':' + instance.getConfig('mongodb.port');
@@ -75,32 +79,54 @@ global.application = (function() {
 	
 	function onHttpRequestReceived(request, response) {
 		request = requestDecorator.decorate(request);
-		response = responseDecorator.decorate(response);
 		
 		var message = request.method + ": " + request.url;
 		var logger = request.getLogger();
 		logger.log(message);
 		
-		// wait for request to be received so all data is avaible for request handling.
-		request.on("end", function() {	
-			Step(
-				function route() {
-					mRouter.route(request, this);
-				},
-				function dispatch(error) {
-					if (error) throw error;
-					mDispatcher.dispatch(request, response, this);
-				},
-				function sendResponse(error) {
-					if (error) {
-						logger.error(error);
-						response.write(error.message);
-					}
-					
-					response.end();
+		Step(
+			// serve static content if possible.
+			function staticContent() {
+				mStaticContentProvider(application, request, response, this);
+			},
+			function dynamicRequest(error, isHandled) {
+				if (error) throw error;
+				if (isHandled) return this(); // request was handled by static content serving.
+				
+				response = responseDecorator.decorate(response);
+
+				function handleRequest() {
+					Step(
+						function route() {
+							mRouter.route(request, this);
+						},
+						function dispatch(error) {
+							if (error) throw error;
+							mDispatcher.dispatch(request, response, this);
+						},
+						function sendResponse(error) {
+							if (error) {
+								logger.error(error);
+								response.write(error.message);
+							}
+
+							response.end();
+							this();
+						}
+					);
 				}
-			);
-		});
+
+				// wait for request to be received so all data is avaible for request handling.
+				if (!request.isDataReceived()) { 
+					request.on("end", function() {	
+						handleRequest();
+					});
+				}
+				else {
+					handleRequest();
+				}
+			}
+		);
 	}
 	
 	Step(
@@ -109,6 +135,7 @@ global.application = (function() {
 			mRouter = createRouter(instance);
 			mDispatcher = createDispatcher(instance);
 			mServer = http.createServer(onHttpRequestReceived);
+			mStaticContentProvider = require("contentcube/static-content-provider");
 			
 			instance.setConfig('system.localPath', __dirname);
 			this();
