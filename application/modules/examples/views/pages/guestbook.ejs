@@ -1,18 +1,22 @@
 <form action="<%- _helpers.url.current() %>" method="post">
-	<label for="name">Name:</label>
-	<input type="text" name="name" />
-	
-	<label for="comment">Comment:</label>
-	<textarea name="comment" rows="15" cols="60"></textarea>
-	
-	<input type="submit" value="Send" />
+	<div>
+		<label for="name">Name:</label><br/>
+		<input type="text" name="name" />
+	</div>
+	<div>
+		<label for="comment">Comment:</label><br/>
+		<textarea name="comment" rows="15" cols="60"></textarea>
+	</div>
+	<div>
+		<input type="submit" value="Send" />
+	</div>
 </form>
 
 <ul>
 <% for (var i = 0; i < comments.length; i++) { %>
 	<li>
-		<h4><%= comments[i].name %></h4>
-		<p><%= comments[i].comment %></p>
+		<h4><%= comments[i].name.ucwords() + ' ' + comments[i].created.format('yyyy-mm-dd HH:MM:ss') %></h4>
+		<p><%= comments[i].comment.ucfirst() %></p>
 	</li>
 <% } %>
 </ul>

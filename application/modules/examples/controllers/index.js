@@ -1,4 +1,4 @@
-var queryString = require("querystring");
+var util = require("util");
 var Step = require("step");
 var controllerCreator = require("contentcube/controller");
 
@@ -12,25 +12,17 @@ module.exports = function(application, request, response) {
 		this(); // this is always the callback, remember to call it.
 	};
 	
-	// url: 127.0.0.1:8123/example/withLayout or 127.0.0.1:8123/example/with-layout
+	// url: 127.0.0.1:8123/examples/index/withLayout or 127.0.0.1:8123/examples/index/with-layout
 	instance.withLayoutAction = function() {
 		var viewData = {
 			title: 'Hello world',
 			description: 'This is an example. You IP address is : ' + request.client('remote-address', 'N/A')
 		};
 		
-		instance.renderViewWithLayout('pages/example/hello', viewData, /* callback */ this);
+		instance.renderViewWithLayout('pages/hello_world', viewData, /* callback */ this);
 	};
 	
-	// url: 127.0.0.1:8123/example/triggerAnError or 127.0.0.1:8123/example/trigger-an-error
-	instance.triggerAnErrorAction = function() {
-		var error = new Error("Example of a triggered error");
-			error.family = "contentcube";
-		
-		this(error);
-	};
-	
-	// url: 127.0.0.1:8123/example/counter
+	// url: 127.0.0.1:8123/examples/index/counter
 	instance.counterAction = function() {
 		var lifetimeInSeconds = 5;
 		var counter = request.cookie('times_visited', 0);
@@ -38,16 +30,16 @@ module.exports = function(application, request, response) {
 			counter += 1;
 			
 		response.setCookie("times_visited", counter, lifetimeInSeconds);
-		instance.renderViewWithLayout('example/counter', {count: counter}, this);
+		instance.renderViewWithLayout('pages/counter', {count: counter}, this);
 	};
 	
-	// url: 127.0.0.1:8123/example/readGetVariabless or 127.0.0.1:8123/example/read-get-variables
-	instance.readGetVariablesAction = function() {
-		var viewData = {
-			dump: queryString.stringify(request.get())
-		};
-		
-		instance.renderViewWithLayout('pages/example/dump', viewData, this);
+	// url: 127.0.0.1:8123/examples/index/read-http-variables
+	instance.readHttpVariablesAction = function() {
+		response.write('get: ' + util.inspect(request.get()) + "\n\n");
+		response.write('post: ' + util.inspect(request.post()) + "\n\n");
+		response.write('client: ' + util.inspect(request.client()) + "\n\n");
+		response.setContentType('text/plain');
+		this();	
 	};
 	
 	instance.twitterReadingAction = function() {
@@ -71,29 +63,7 @@ module.exports = function(application, request, response) {
 	instance.viewHelperAction = function() {
 		instance.broker.layout.addScript("test");
 		instance.broker.placeholder('testing').set("title", "hello world");
-		instance.renderViewWithLayout("pages/example/helpers", {}, this);
-	};
-	
-	instance.guestbookAction = function() {
-		var callback = this;
-		var guestbookModel = require("./../models/guestbook");
-		
-		if (request.method == "POST") {
-			guestbookModel.createNew(request.post());
-		}
-		
-		Step(
-			function getComments() {
-				guestbookModel.findAll(this);
-			},
-			function renderView(error, comments) {
-				var viewData = {
-					comments: comments
-				};
-				
-				instance.renderViewWithLayout("pages/example/guestbook", viewData, callback);
-			}
-		);
+		instance.renderViewWithLayout("pages/helpers", {}, this);
 	};
 	
 	instance.postDispatch = function() {

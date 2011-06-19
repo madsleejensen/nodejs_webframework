@@ -1,5 +1,6 @@
-<% _helpers.layout.addScript("http://www.javascript.com") %>
+<% _helpers.layout.addScript('/javascript/test.js') %>
+<% _helpers.layout.addStyle('/css/test.css') %>
 
 <h1><%= _helpers.placeholder('testing').get('title') %></h1>
-<%- _helpers.renderView('partial/person.ejs', {name: 'Mads Jensen', description: 'Testing render view helper'}) %>
+<%- _helpers.renderView('partials/person.ejs', {name: 'Mads Jensen', description: 'Testing render view helper'}) %>
 <p>footer</p>
