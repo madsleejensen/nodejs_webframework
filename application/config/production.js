@@ -1,3 +1,9 @@
+exports.system = {
+	localPath: null,
+	url: 'http://localhost:8123/',
+	baseUrl: ''
+};
+
 exports.routing = {
 	defaultControllerName: 'index',
 	defaultActionName: 'index',

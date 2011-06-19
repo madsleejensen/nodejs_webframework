@@ -16,19 +16,6 @@ global.application = (function() {
 	var mDatabase;
 	var instance = {};
 	
-	Step(
-		function initialize() {
-			mConfig = require("./application/config/production");
-			mRouter = createRouter(instance);
-			mDispatcher = createDispatcher(instance);
-			mServer = http.createServer(onHttpRequestReceived);
-			this();
-		},
-		function startServer(error) {
-			mServer.listen(8123);
-		}
-	);
-	
 	/**
 	 * Return the configuration based on a `path`, or `defaultValue` if no match.
 	 *  -example 
@@ -56,6 +43,24 @@ global.application = (function() {
 		
 		return pointer;
 	};
+	
+	instance.setConfig = function(path, value) {
+		var segments = path.split(".");
+		var lastIndex = segments.pop();
+		var pointer = mConfig;
+		while (segments.length > 0) {
+			var index = segments.shift();
+			if (!pointer[index]) {
+				pointer[index] = {};
+			}
+			
+			pointer = pointer[index];
+		}
+		
+		pointer[lastIndex] = value;
+		return pointer;
+	};
+	
 	
 	instance.getDatabase = function() {
 		if (!mDatabase) {
@@ -98,6 +103,20 @@ global.application = (function() {
 		});
 	}
 	
-	return instance;
+	Step(
+		function initialize() {
+			mConfig = require("./application/config/production");
+			mRouter = createRouter(instance);
+			mDispatcher = createDispatcher(instance);
+			mServer = http.createServer(onHttpRequestReceived);
+			
+			instance.setConfig('system.localPath', __dirname);
+			this();
+		},
+		function startServer(error) {
+			mServer.listen(8123);
+		}
+	);
 	
+	return instance;
 }());
