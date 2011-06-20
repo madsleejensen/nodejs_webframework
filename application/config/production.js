@@ -1,4 +1,5 @@
 exports.system = {
+	serveStaticContent: true,
 	modulesEnabled: true,
 	localPath: null,
 	url: 'http://localhost:8123/',

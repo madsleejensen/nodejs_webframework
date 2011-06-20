@@ -1,7 +1,5 @@
 var http = require("http");
 var Step = require("step");
-var util = require("util");
-var utils = require("contentcube/utils");
 var createRouter = require("contentcube/router");
 var createDispatcher = require("contentcube/dispatcher");
 var requestDecorator = require("contentcube/request");
@@ -87,6 +85,10 @@ global.application = (function() {
 		Step(
 			// serve static content if possible.
 			function staticContent() {
+				if (!application.getConfig('system.serveStaticContent', false)) {
+					return this();
+				}
+				
 				mStaticContentProvider(application, request, response, this);
 			},
 			function dynamicRequest(error, isHandled) {

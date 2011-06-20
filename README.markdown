@@ -94,11 +94,65 @@ is the same as
 	http://localhost/index/index
 
 
-### Cookies
+### Static content
+
+All files placed inside the public/ folder can be requested directly from the browser. Static file serving always has higher priority than routing a request, so if possible the system will attempt to handle the request by serving a file inside the public/ folder.
+
+	http://localhost/javascript/test.js
+
+Will serve the file 
+
+	/public/javascript/test.js
+
+#### Using nginx for providing static content.
+
+If you rather have nginx handle the process of serving static content, you should set the configuration `system.serveStaticContent` to `false`.
+
+
+### Request object
+
+The standard `http.ServerRequest` provided by nodejs is extended, and provides these extra features:
+
+#### GET variables
+
+Easy access to the variables sent by GET.
+
+	// if GET `hello` is present then return value, else return `null`
+	request.get('hello');
+	// if GET `hello` is present then return value, else return `fallbackValue`
+	request.get('hello', fallbackValue);
+	// returns a name / value map with all the GET variables.
+	request.get();
+
+#### Post variables
+
+The convention for post variables is exactly the same as GET.
+
+	request.post('name'); 
+	request.post('name', fallbackValue);
+	request.post();
+
+#### Client infomation
+
+Get infomation about the client doing the request.
+	
+ 	request.client('name');
+	request.client();
+
+These are the values provided about the client.
+
+	{
+		'remote-address': /* IP address */,
+		'remote-port': ,
+		'user-agent': 
+	}
+
+#### Cookies
 
 Cookies can be accessed thru the `request` object
 
-	request.cookie('cookie_name', 'n/a'); // returns the value of cookie_name if present, else returns the value of the second parameter.
+	// returns the value of cookie_name if present, else returns the value of the second parameter.
+	request.cookie('cookie_name', 'n/a'); 
 	request.cookie(); // returns a name-value map of all cookies.
 
 To set a cookie use the `response` object
@@ -113,13 +167,14 @@ And to remove an existing cookie use
 
 Controllers are stored in 'application/controllers/' they should always inherit from the 'system/contentncube/controller.js'. The naming convention is that controller filenames should always be lowercase. 
 
-	url: http://localhost/users/show/12345/
-	would result in
-		controller: 'application/controllers/users.js'
-		action: 'showAction'
-		parameters: showAction(12345);
+	http://localhost/users/show/12345/
+	
+Would result in a call to:
+	
+	var controller = require("/application/controllers/users.js");
+	controller.showAction(12345);
 		
-Actions are always suffixed with 'Action'
+Notice that actions are always suffixed with 'Action'
 	
 #### Controller - Hooks
 
@@ -137,15 +192,15 @@ You can hook in a be notified before and after a call to a action in a controlle
 
 ## Helpers
 
-A set of helpers is provided to both your controllers and the views you render.
+A set of helpers is provided to both your controllers and the views you render. All views has access to a local property called `_helpers`.
 
 ### Placeholder 
 
 A placeholder is simply a data container which lifetime is excatly one request. This allows components to maintain state while remaning decoupled form each other.
 
 	for example: 
-		View "A": <% _helper.placeholder('my-data').set('title', 'Hello world') %>
-		View "B": <%- _helper.placeholder('my-data').get('title') %> // returns "Hello world"
+		View "A": <% _helpers.placeholder('my-data').set('title', 'Hello world') %>
+		View "B": <%- _helpers.placeholder('my-data').get('title') %> // returns "Hello world"
 		
 ### View render
 
@@ -153,7 +208,7 @@ Enables views to render partial views (innerviews).
 
 	<%- _helpers.renderView('partials/list_item_user.ejs', {name: 'Mads'}) %>
 
-This will render the view and return the output. Notice this is a blocking call.
+This will render the view and return the output. Notice this is a blocking call. 
 
 ### Layout
 
