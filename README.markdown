@@ -132,6 +132,13 @@ The convention for post variables is exactly the same as GET.
 	request.post('name', fallbackValue);
 	request.post();
 
+#### File uploads
+
+The framework uses the **formidable** module, all files received will be available as `formidable.File` objects
+
+	request.files('input_name');
+	request.files(); // all files in a name - value map.
+
 #### Client infomation
 
 Get infomation about the client doing the request.
@@ -228,5 +235,20 @@ And in your template dump the includes
 		</head>
 	</html>
 
+### Url 
 
+A helper to help generate urls.
 
+	// simply returns the current url
+	<%- _helpers.url.current() %>
+	
+	// all arguments will be appended.
+	// `[:current-url]/test/123`
+	<%- _helpers.url.current('test', '123') %>
+	
+	// returns the value defined in configuration `system.url` 
+	// arguments can be added like the `current()` method
+	<%- _helpers.url.baseUrl() %>
+	
+	// generate a url `/examples/index/hello/user/123`
+	<%- _helpers.url.build({controller: 'index', action: 'hello', module: 'examples', params: ['user', '123']}) %>
