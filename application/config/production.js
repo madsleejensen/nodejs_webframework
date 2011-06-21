@@ -3,7 +3,7 @@ exports.system = {
 	modulesEnabled: true,
 	localPath: null,
 	url: 'http://localhost:8123/',
-	baseUrl: ''
+	baseUrl: '/'
 };
 
 exports.routing = {

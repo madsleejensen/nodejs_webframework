@@ -3,6 +3,7 @@
 *.tmproj
 .dropbox
 application/logs/*
+public/uploads/*
 TODO.txt
 /TODO.txt
-/Icon
+/Icon

@@ -24,7 +24,7 @@ module.exports = function(application, request, response) {
 	
 	// url: 127.0.0.1:8123/examples/index/counter
 	instance.counterAction = function() {
-		var lifetimeInSeconds = 5;
+		var lifetimeInSeconds = 30;
 		var counter = request.cookie('times_visited', 0);
 			counter = parseInt(counter);
 			counter += 1;

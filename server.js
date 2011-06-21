@@ -5,6 +5,7 @@ var createDispatcher = require("contentcube/dispatcher");
 var requestDecorator = require("contentcube/request");
 var responseDecorator = require("contentcube/response");
 var mongolian = require("mongolian");
+var formidable = require("formidable");
 
 global.application = (function() {
 	var mConfig;
@@ -42,7 +43,7 @@ global.application = (function() {
 		
 		return pointer;
 	};
-	
+
 	instance.setConfig = function(path, value) {
 		var segments = path.split(".");
 		var lastIndex = segments.pop();
@@ -52,7 +53,6 @@ global.application = (function() {
 			if (!pointer[index]) {
 				pointer[index] = {};
 			}
-			
 			pointer = pointer[index];
 		}
 		
@@ -83,17 +83,18 @@ global.application = (function() {
 		logger.log(message);
 		
 		Step(
-			// serve static content if possible.
-			function staticContent() {
+			// handle request by serving static content.
+			function handleStaticContentRequest() {
 				if (!application.getConfig('system.serveStaticContent', false)) {
 					return this();
 				}
 				
 				mStaticContentProvider(application, request, response, this);
 			},
-			function dynamicRequest(error, isHandled) {
+			// handle request thru a framework process.
+			function handleFrameworkRequest(error, isHandled) {
 				if (error) throw error;
-				if (isHandled) return this(); // request was handled by static content serving.
+				if (isHandled) return this();
 				
 				response = responseDecorator.decorate(response);
 
@@ -118,9 +119,10 @@ global.application = (function() {
 					);
 				}
 
-				// wait for request to be received so all data is avaible for request handling.
+				// wait for all request data to be received. 
+				// so post data / files are avaible when handling the request.
 				if (!request.isDataReceived()) { 
-					request.on("end", function() {	
+					request.on("request_received", function() {	
 						handleRequest();
 					});
 				}
@@ -136,8 +138,8 @@ global.application = (function() {
 			mConfig = require("./application/config/production");
 			mRouter = createRouter(instance);
 			mDispatcher = createDispatcher(instance);
-			mServer = http.createServer(onHttpRequestReceived);
 			mStaticContentProvider = require("contentcube/static-content-provider");
+			mServer = http.createServer(onHttpRequestReceived);
 			
 			instance.setConfig('system.localPath', __dirname);
 			this();
