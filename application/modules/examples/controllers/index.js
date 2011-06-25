@@ -1,9 +1,9 @@
-var util = require("util");
+var Util = require("util");
 var Step = require("step");
-var controllerCreator = require("contentcube/controller");
+var ControllerCreator = require("contentcube/controller");
 
 module.exports = function(application, request, response) {
-	var instance = controllerCreator(application, request, response);
+	var instance = ControllerCreator(application, request, response);
 		// define which layout `renderViewWithLayout` should use.
 		instance.layout = 'layouts/example_layout.ejs';
 		
@@ -35,9 +35,9 @@ module.exports = function(application, request, response) {
 	
 	// url: 127.0.0.1:8123/examples/index/read-http-variables
 	instance.readHttpVariablesAction = function() {
-		response.write('get: ' + util.inspect(request.get()) + "\n\n");
-		response.write('post: ' + util.inspect(request.post()) + "\n\n");
-		response.write('client: ' + util.inspect(request.client()) + "\n\n");
+		response.write('get: ' + Util.inspect(request.get()) + "\n\n");
+		response.write('post: ' + Util.inspect(request.post()) + "\n\n");
+		response.write('client: ' + Util.inspect(request.client()) + "\n\n");
 		response.setContentType('text/plain');
 		this();	
 	};

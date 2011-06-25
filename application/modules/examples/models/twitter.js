@@ -1,4 +1,4 @@
-var http = require("http");
+var Http = require("http");
 
 exports.findLatest = function(callback) {
 	var options = {
@@ -6,7 +6,7 @@ exports.findLatest = function(callback) {
 		port: 80,
 		path: '/search.json?q=nodejs'
 	}
-	var request = http.request(options, function(response) {
+	var request = Http.request(options, function(response) {
 		var buffer = "";
 		response.setEncoding("utf8");
 		response.on("data", function(chunk) {

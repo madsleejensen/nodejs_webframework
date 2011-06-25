@@ -1,8 +1,8 @@
 var Step = require("step");
-var controllerCreator = require("contentcube/controller");
+var ControllerCreator = require("contentcube/controller");
 
 module.exports = function(application, request, response) {
-	var instance = controllerCreator(application, request, response);
+	var instance = ControllerCreator(application, request, response);
 		instance.layout = 'layouts/example_layout.ejs';
 	
 	instance.indexAction = function() {

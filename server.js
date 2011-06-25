@@ -120,7 +120,6 @@ global.application = (function() {
 						},
 						function dispatch(error) {
 							if (error) throw error;
-							
 							var onDispatchingCompleted = this;
 							
 							Step(
