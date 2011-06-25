@@ -1,11 +1,11 @@
-var http = require("http");
+var Http = require("http");
 var Step = require("step");
-var createRouter = require("contentcube/router");
-var createDispatcher = require("contentcube/dispatcher");
-var requestDecorator = require("contentcube/request");
-var responseDecorator = require("contentcube/response");
-var mongolian = require("mongolian");
-var formidable = require("formidable");
+var CreateRouter = require("contentcube/router");
+var CreateDispatcher = require("contentcube/dispatcher");
+var RequestDecorator = require("contentcube/request");
+var ResponseDecorator = require("contentcube/response");
+var Emitter = require("contentcube/emitter");
+var Mongolian = require("mongolian");
 
 global.application = (function() {
 	var mConfig;
@@ -14,7 +14,9 @@ global.application = (function() {
 	var mServer;
 	var mDatabase;
 	var mStaticContentProvider;
-	var instance = {};
+	var instance = {
+		emitter: Emitter.createNew()
+	};
 	
 	/**
 	 * Return the configuration based on a `path`, or `defaultValue` if no match.
@@ -67,7 +69,7 @@ global.application = (function() {
 	instance.getDatabase = function() {
 		if (!mDatabase) {
 			var connection = instance.getConfig('mongodb.host') + ':' + instance.getConfig('mongodb.port');
-			var databaseServer = new mongolian(connection);
+			var databaseServer = new Mongolian(connection);
 			
 			mDatabase = databaseServer.db(instance.getConfig('mongodb.database'));
 		}
@@ -76,7 +78,7 @@ global.application = (function() {
 	};
 	
 	function onHttpRequestReceived(request, response) {
-		request = requestDecorator.decorate(request);
+		request = RequestDecorator.decorate(request);
 		
 		var message = request.method + ": " + request.url;
 		var logger = request.getLogger();
@@ -96,16 +98,44 @@ global.application = (function() {
 				if (error) throw error;
 				if (isHandled) return this();
 				
-				response = responseDecorator.decorate(response);
+				response = ResponseDecorator.decorate(response);
 
 				function handleRequest() {
 					Step(
 						function route() {
-							mRouter.route(request, this);
+							var onRouteCompleted = this;
+							Step(
+								function before() {
+									instance.emitter.emit("before:routing", [request, response], this);
+								},
+								function doRouting(error) {
+									if (error) throw error;
+									mRouter.route(request, this);
+								},
+								function after(error) {
+									if (error) throw error;
+									instance.emitter.emit("after:routing", [request, response], onRouteCompleted);
+								}
+							);
 						},
 						function dispatch(error) {
 							if (error) throw error;
-							mDispatcher.dispatch(request, response, this);
+							
+							var onDispatchingCompleted = this;
+							
+							Step(
+								function before() {
+									instance.emitter.emit("before:dispatching", [request, response], this);
+								},
+								function doDispatching(error) {
+									if (error) throw error;
+									mDispatcher.dispatch(request, response, this);
+								},
+								function after(error) {
+									if (error) throw error;
+									instance.emitter.emit("after:dispatching", [request, response], onDispatchingCompleted);
+								}
+							);
 						},
 						function sendResponse(error) {
 							if (error) {
@@ -136,10 +166,10 @@ global.application = (function() {
 	Step(
 		function initialize() {
 			mConfig = require("./application/config/production");
-			mRouter = createRouter(instance);
-			mDispatcher = createDispatcher(instance);
+			mRouter = CreateRouter(instance);
+			mDispatcher = CreateDispatcher(instance);
 			mStaticContentProvider = require("contentcube/static-content-provider");
-			mServer = http.createServer(onHttpRequestReceived);
+			mServer = Http.createServer(onHttpRequestReceived);
 			
 			instance.setConfig('system.localPath', __dirname);
 			this();
