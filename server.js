@@ -106,7 +106,7 @@ global.application = (function() {
 							var onRouteCompleted = this;
 							Step(
 								function before() {
-									instance.emitter.emit("before:routing", [request, response], this);
+									instance.emitter.emit("routing:before", [request, response], this);
 								},
 								function doRouting(error) {
 									if (error) throw error;
@@ -114,7 +114,7 @@ global.application = (function() {
 								},
 								function after(error) {
 									if (error) throw error;
-									instance.emitter.emit("after:routing", [request, response], onRouteCompleted);
+									instance.emitter.emit("routing:after", [request, response], onRouteCompleted);
 								}
 							);
 						},
@@ -124,7 +124,7 @@ global.application = (function() {
 							
 							Step(
 								function before() {
-									instance.emitter.emit("before:dispatching", [request, response], this);
+									instance.emitter.emit("dispatch_loop:before", [request, response], this);
 								},
 								function doDispatching(error) {
 									if (error) throw error;
@@ -132,7 +132,7 @@ global.application = (function() {
 								},
 								function after(error) {
 									if (error) throw error;
-									instance.emitter.emit("after:dispatching", [request, response], onDispatchingCompleted);
+									instance.emitter.emit("dispatch_loop:after", [request, response], onDispatchingCompleted);
 								}
 							);
 						},
@@ -151,7 +151,7 @@ global.application = (function() {
 				// wait for all request data to be received. 
 				// so post data / files are avaible when handling the request.
 				if (!request.isDataReceived()) { 
-					request.on("request_received", function() {	
+					request.on("request:data_received", function() {	
 						handleRequest();
 					});
 				}
@@ -169,8 +169,8 @@ global.application = (function() {
 			mDispatcher = CreateDispatcher(instance);
 			mStaticContentProvider = require("contentcube/static-content-provider");
 			mServer = Http.createServer(onHttpRequestReceived);
-			
 			instance.setConfig('system.localPath', __dirname);
+			
 			this();
 		},
 		function startServer(error) {
