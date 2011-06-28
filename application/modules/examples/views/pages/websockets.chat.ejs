@@ -1,0 +1,41 @@
+<% _helpers.layout.setTitle('Simple chat using socket.io') %>
+<% _helpers.layout.addScript('http://code.jquery.com/jquery-1.6.1.min.js') %>
+<% _helpers.layout.addScript('/socket.io/socket.io.js') %>
+
+<h1>Simple chat</h1>
+<div id="messages"></div>
+
+<br/>
+
+<form>
+	<input type="text" name="send_message" id="input-message" /> <input type="submit" value="Send" id="button-send-message" />
+</form>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	var connection = io.connect('http://localhost:8123');
+	var chat = connection.socket.of('/chat');
+	chat.on('user:connected', function(data) {
+		$('#messages').prepend('<p>user connected:' + data.id + '</p>');
+	});
+	
+	chat.on('message:received', function(data) {
+		var message = data.id + ': ' + data.message;
+		$('#messages').prepend('<p>' + message + '</p>');
+	});
+	
+	var input = $('#input-message');
+	var button = $('#button-send-message');
+		button.click(function(evt) {
+			evt.preventDefault();
+			var value = input.val();
+			input.val('');
+			
+			chat.emit('message:send', value);
+			return false;
+		});
+});
+
+</script>

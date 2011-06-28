@@ -13,6 +13,7 @@ The basic file structure:
 	|	|-- controllers/
 	|   |   |-- index.js
 	|   |-- models/
+	|	|-- plugins/
 	|   |-- views/
 	|   |   |-- layouts/
 	|   |   |   |-- template.ejs
@@ -39,6 +40,7 @@ Using the modular structure your application have a way to structure `sub-applic
 	|	|   |   |-- controllers/
 	|   |   |   |   |-- index.js
 	|   |   |   |-- models/
+	|	|	|	|-- plugins/
 	|   |   |   |-- views/
 	|   |   |   |   |-- layouts/
 	|   |   |   |   |   |-- template.ejs
@@ -182,6 +184,37 @@ Would result in a call to:
 	controller.showAction(12345);
 		
 Notice that actions are always suffixed with 'Action'
+
+#### Hooks
+
+The framework allows for simple injection of functionality thru the concept of "web-hooks". The global `Application` object contains a property called `emitter`, this is a extended implementation of the `events.Emitter`. 
+The system will wait for the registered hooks to finish before proceeding.
+
+	global.application.emitter.on("routing:before", function(request, response) {
+		console.log("About to route: " + request.url);
+		this(); // always trigger the callback when finished.
+	});
+	
+	global.application.emitter.removeListener('routing:before'); // remove all listeners for routing:before.
+
+
+The following list all receive a `request` and a `response` object as arguments in their hook function.
+
+- 	routing:before
+	Called before any routing takes place.
+- 	routing:after
+	Called after routing has executed.
+	
+- 	dispatch:before
+	Called just before the controller is initialized.
+- 	dispatch:after
+	Called after a controller has handled a action.
+	
+- 	dispatch_loop:before
+	Called on dispatch loop startup.
+- 	dispatch_loop:after
+	Called when the dispatch loop finished. (request handled).
+	
 	
 #### Controller - Hooks
 
@@ -196,6 +229,51 @@ You can hook in a be notified before and after a call to a action in a controlle
 	instance.postDispatch = function() {
 		this(); // callback
 	};
+
+
+### Plugins 
+
+To allow the system to be as extendable as possible, without having to overwrite / extend the core `Application`. We introduced the concept of plugins. Plugins should be thought of as small applications running inside the main `Application`. 
+They use system events and data to hook in, and add their behavior. All plugins must be derived from the `contentcube/plugins/plugin` module. 
+The `Application` expose a method for registering plugins to the system.
+	
+	// recursively loop thru all files inside the folder,
+	// and attempt to register them as plugins
+	var pathToFolder = './application/modules/examples/plugins/';
+	global.application.registerPlugins(pathToFolder);
+
+We use a plugin to run a Chat service in the examples /application/modules/examples/plugins/chat.js.
+
+#### Writing a custom plugin
+
+All plugins should be derived from the `contentcube/plugins/plugin` module, and overwrite the `register()` and `unregister()` methods. Here is an example of a simple plugin that hooks in and just print a console message whenever a new request is received.
+	
+	// /application/modules/examples/plugins/logger.js
+	var base = require("contentcube/plugin/plugin");
+	module.exports = function LoggerPlugin(application) {
+		var instance = base(application);
+		
+		// hook into the system and listen for new requests.
+		instance.register = function() {
+			application.httpServer.on("request", onRequestReceived);
+			console.log("LoggerPlugin - registered");
+		};
+		
+		// remove itself form the system.
+		instance.unregister = function() {
+			application.httpServer.removeListener('request', onRequestRecevied);
+			console.log("LoggerPlugin - unregistered");
+		};
+		
+		function onRequestRecevied(request, response) {
+			console.log("new request: " + request.url);
+		}
+		
+		return instance;
+	};
+	
+Plugin files do not have restriction of where they should be located, but the best pratices is to put them inside their module folder, see "File structure".
+
 
 ## Helpers
 

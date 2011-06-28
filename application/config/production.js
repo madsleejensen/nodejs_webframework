@@ -1,6 +1,7 @@
 exports.system = {
 	serveStaticContent: true,
 	modulesEnabled: true,
+	webSocketsEnabled: true,
 	localPath: null,
 	url: 'http://localhost:8123/',
 	baseUrl: '/'
