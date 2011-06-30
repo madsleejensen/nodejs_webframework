@@ -5,8 +5,12 @@ module.exports = function(application, request, response) {
 	var instance = ControllerCreator(application, request, response);
 		instance.layout = 'layouts/example_layout.ejs';
 	
-	instance.indexAction = function() {
+	instance.chatAction = function() {
 		instance.renderViewWithLayout('pages/websockets.chat.ejs', {}, this);
+	};
+	
+	instance.rpcAction = function() {
+		instance.renderViewWithLayout('pages/websockets.rpc.ejs', {}, this);
 	};
 	
 	return instance;

@@ -7,7 +7,7 @@ Step(
 		global.application = Application(__dirname);
 		
 		application.registerPlugins(Path.join(__dirname, '/application/modules/examples/plugins'));
-		
+		application.registerPlugins(Path.join(__dirname, '/node_modules/contentcube/plugins/'));
 		
 		/*
 		application.emitter.on("routing:before", function(request, response) {
