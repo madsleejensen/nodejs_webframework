@@ -274,6 +274,28 @@ All plugins should be derived from the `contentcube/plugins/plugin` module, and 
 	
 Plugin files do not have restriction of where they should be located, but the best pratices is to put them inside their module folder, see "File structure".
 
+#### Remote procedure call plugin.
+
+The system provide a RPC implementation, that uses Socket.IO as transport layer. With this you can exposed your domain models to the client code with ease.
+	
+Server side setup.
+
+	application.registerPlugins(Path.join(__dirname, '/node_modules/contentcube/plugins/'), function() {
+		var twitter = require("./application/modules/examples/models/twitter");
+		application.plugins['rpc'].expose('twitter', twitter);
+	});
+
+Client side implementation
+
+	var rpc = RemoteProcedureCallCreator('http://localhost:8123');
+		rpc.on('received:meta_descriptions', function(descriptions) {
+			
+			// Now the exposed methods are ready to me called.
+			rpc.twitter.findLatest(function(data) {
+				console.log(data);
+			});
+		});
+		
 
 ## Helpers
 
