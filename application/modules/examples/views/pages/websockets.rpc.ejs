@@ -24,16 +24,13 @@ $(document).ready(function() {
 			methodsNode.children().remove();
 			
 			var name = $(this).val();
-			
 			for (var member in metaDescriptions[name]) {
 				var memberNode = $('<option>' + member + '</option>');
 				methodsNode.append(memberNode);
 			}
-			
 		});
 		
 	var methodsNode = $('#methods');
-	
 	var metaDescriptions;
 	
 	var rpc = RemoteProcedureCallCreator('http://localhost:8123');
@@ -48,11 +45,14 @@ $(document).ready(function() {
 			}
 			
 			metaDescriptions = descriptions;
-			
+		});
+		rpc.on("ready", function() {
+			// call RPC method.
 			rpc.twitter.findLatest(function(data) {
 				alert(data);
 			});
 		});
+		
 });
 
 

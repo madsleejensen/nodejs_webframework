@@ -1,5 +1,4 @@
 var RemoteProcedureCallCreator = function(host) {
-	
 	var instance = EmitterCreator();
 	var connection = io.connect(host);
 	var channel = connection.socket.of('/rpc');
@@ -17,6 +16,7 @@ var RemoteProcedureCallCreator = function(host) {
 	}
 	
 	function onResponseMetaDescriptions (descriptions) {
+		instance.emit("received:meta_descriptions", [descriptions]);
 		
 		for (var name in descriptions) {
 			var proxySchema = descriptions[name];
@@ -39,14 +39,13 @@ var RemoteProcedureCallCreator = function(host) {
 						
 						callbacks[requestId] = callback;
 					};
-					
 				}
 			}
 			
 			instance[name] = proxy;
 		}
 		
-		instance.emit("received:meta_descriptions", [descriptions]);
+		instance.emit("ready");
 	}
 	
 	channel.emit("request:meta_descriptions");

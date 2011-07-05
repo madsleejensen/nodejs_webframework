@@ -278,24 +278,43 @@ Plugin files do not have restriction of where they should be located, but the be
 
 The system provide a RPC implementation, that uses Socket.IO as transport layer. With this you can exposed your domain models to the client code with ease.
 	
-Server side setup.
+**Exposing a server side model:**
+	
+	// model
+	var twitter = {
+		findLatest: function(callback) {
+			// validation / database calls etc.
+			var data = [1,2,3];
+			callback(data);
+		}
+	};
+	
+**Setup RPC support on the server:**
 
 	application.registerPlugins(Path.join(__dirname, '/node_modules/contentcube/plugins/'), function() {
 		var twitter = require("./application/modules/examples/models/twitter");
 		application.plugins['rpc'].expose('twitter', twitter);
 	});
 
-Client side implementation
-
+**Client side implementation**
+	
+	// include "/javascript/module.rpc.js"
 	var rpc = RemoteProcedureCallCreator('http://localhost:8123');
-		rpc.on('received:meta_descriptions', function(descriptions) {
-			
+		rpc.on('ready', function() {
 			// Now the exposed methods are ready to me called.
 			rpc.twitter.findLatest(function(data) {
 				console.log(data);
-			});
+			});	
 		});
 		
+The client side RPC object emits a couple of events that:
+
+- 	ready
+	emitted when meta descriptions has been received and parsed. All RPC services are now ready to be used.
+	
+-   received:meta_descriptions
+	emitted when meta descriptions has been received, but before they are parsed into rpc services.
+	
 
 ## Helpers
 

@@ -1,0 +1,28 @@
+Scene scene = new Scene();
+
+3DModel box = new Box();
+box.position = new Vector3D(1.0, 2.0, 0.0);
+box.rotation = new Rotation() { x: 1, y: 0, z: 0, degrees: 30 };
+
+Camera camera = new Camera();
+camera.near = 1.0f;
+camera.far = 10000f;
+camera.eye.position = Vector3D(...);
+camera.eye.lookAt = Vector3D(...);
+
+scene.add(box);
+scene.setCamera(camera);
+
+Vector3D vertex;
+vertex.minus(Vertex3D());
+vertex.length(Vertex3D());
+
+// static factories.
+3DModel.loadWavefront("female.obj");
+
+3DAnimation animation = [// an array of 3DModel's]
+
+
+Light??
+
+// Vertices and normals / texture maps is completely hidden from the client?.
