@@ -1,5 +1,6 @@
 var Step = require("step");
 var ControllerCreator = require("contentcube/controller");
+var Path = require("contentcube/path");
 
 module.exports = function(application, request, response) {
 	var instance = ControllerCreator(application, request, response);
@@ -7,7 +8,7 @@ module.exports = function(application, request, response) {
 	
 	instance.indexAction = function() {
 		var callback = this;
-		var guestbookModel = Loader.getModel('guestbook', 'examples');
+		var guestbookModel = require(Path.getModel('guestbook', 'examples'));
 		
 		if (request.method == "POST") {
 			guestbookModel.createNew(request.post());
