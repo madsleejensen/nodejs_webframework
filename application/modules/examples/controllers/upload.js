@@ -16,7 +16,7 @@ module.exports = function(application, request, response) {
 		
 		var viewData = {};
 		if (file) {
-			var savepath = application.getConfig('system.url') + 'uploads/' + file.name;
+			var savepath = application.config.get('system.url') + 'uploads/' + file.name;
 			viewData.title = "Great you've uploaded the file: " + file.name;
 			
 			FileSystem.rename(file.path, savepath, function() {

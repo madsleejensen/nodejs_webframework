@@ -7,7 +7,7 @@ module.exports = function(application, request, response) {
 	
 	instance.indexAction = function() {
 		var callback = this;
-		var guestbookModel = require("./../models/guestbook");
+		var guestbookModel = Loader.getModel('guestbook', 'examples');
 		
 		if (request.method == "POST") {
 			guestbookModel.createNew(request.post());
