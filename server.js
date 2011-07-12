@@ -5,11 +5,11 @@ var Application = require("contentcube/application");
 Step(
 	function initialize() {
 		global.application = Application(__dirname);
-		application.registerPlugins(Path.join(__dirname, '/application/modules/examples/plugins'));
-		application.registerPlugins(Path.join(__dirname, '/node_modules/contentcube/plugins/'), function() {
+		application.plugins.addPath(Path.join(__dirname, '/application/modules/examples/plugins'));
+		application.plugins.addPath(Path.join(__dirname, '/node_modules/contentcube/plugins/'), function() {
 			
 			var twitter = require("./application/modules/examples/models/twitter");
-			var rpc = application.plugins['rpc'];
+			var rpc = application.plugins.get('rpc');
 			
 			rpc.expose('twitter', twitter);
 			
