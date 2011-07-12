@@ -15,11 +15,6 @@ Step(
 			
 		});
 		
-		//console.log(Loader.getViewPath("pages/test.ejs", "examples"));
-		//console.log(Loader.getModel("twitter", "examples"));
-		//Loader.getPluginsPath('examples');
-		//Loader.getSystemPluginPath();
-		
 		/*
 		application.emitter.on("routing:before", function(request, response) {
 			console.log("test");
