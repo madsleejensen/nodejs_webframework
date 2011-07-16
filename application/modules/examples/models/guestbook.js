@@ -1,6 +1,6 @@
 module.exports = new function()
 {
-	var database = global.application.getDatabase();
+	var database = application.services.getDatabase();
 	var collection = database.collection('guestbook');
 	var instance = {};
 	

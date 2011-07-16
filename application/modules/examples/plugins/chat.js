@@ -3,7 +3,7 @@ var Plugin = require("contentcube/plugins/plugin");
 module.exports = function WebsocketChat(application) {
 	var SOCKET_IO_NAMESPACE = '/chat';
 	
-	var chatIO = application.socketIO.of(SOCKET_IO_NAMESPACE);
+	var chatIO = application.services.getSocketIO().of(SOCKET_IO_NAMESPACE);
 	var instance = Plugin(application);
 	
 	instance.register = function() {		
